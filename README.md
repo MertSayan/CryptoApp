@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/02f258f2-382d-45d6-93f0-3abcbb23029d)🔐 Kripto Şifreleme Uygulaması
+🔐 Kripto Şifreleme Uygulaması
 
 🚀 Proje Hakkında
 
