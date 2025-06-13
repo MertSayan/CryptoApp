@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kripto</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Kripto.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #f4f4f4;
+        }
+
+        .custom-navbar {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .custom-navbar .navbar-brand {
+                color: #ffcc70 !important;
+                font-weight: bold;
+                font-size: 1.6rem;
+                text-shadow: 0 0 6px rgba(255, 204, 112, 0.5);
+            }
+
+            .custom-navbar .nav-link {
+                color: #ffffff !important;
+                font-weight: 500;
+                margin-right: 20px;
+                transition: color 0.2s ease;
+            }
+
+                .custom-navbar .nav-link:hover {
+                    color: #ffdd99 !important;
+                }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar custom-navbar navbar-expand-md px-4">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">🔐 Kripto</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Rsa" asp-action="Index">RSA</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Sha" asp-action="Index">SHA256</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

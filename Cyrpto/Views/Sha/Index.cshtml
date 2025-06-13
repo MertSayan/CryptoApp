@@ -1,0 +1,309 @@
+﻿@{
+    ViewData["Title"] = "SHA256 Hashleme";
+    var hash = ViewBag.HashResult as string;
+    var mode = ViewBag.Mode as string ?? "text";
+    var plainText = ViewBag.PlainText as string;
+    var fileName = ViewBag.FileName as string;
+    var error = ViewBag.Error as string;
+}
+
+<!-- particles.js -->
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+<div id="particles-js" style="position: fixed; width: 100%; height: 100%; z-index: -1;"></div>
+
+<!-- toastr -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #fff;
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2.8rem;
+        color: #ffdd80;
+        text-shadow: 0 0 15px rgba(255, 200, 100, 0.6);
+        animation: flicker 2s infinite alternate, glowTitle 3s ease-in-out infinite alternate;
+        margin-top: 60px;
+        margin-bottom: 36px;
+        letter-spacing: 2px;
+        font-weight: bold;
+        position: relative;
+    }
+
+        .page-title::after {
+            content: "";
+            display: block;
+            height: 4px;
+            width: 180px;
+            margin: 18px auto 0;
+            background: linear-gradient(90deg, #ffdd80, #ffcc40);
+            border-radius: 5px;
+            box-shadow: 0 0 15px #ffcc40;
+        }
+
+    .tab-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 32px;
+        margin-bottom: 32px;
+        z-index: 1;
+        position: relative;
+    }
+
+        .tab-buttons button {
+            background: #ffdd80;
+            color: #1f1c2c;
+            border: none;
+            padding: 14px 38px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(255, 200, 120, 0.15);
+            transition: background 0.2s, transform 0.2s;
+            outline: none;
+        }
+
+            .tab-buttons button.active,
+            .tab-buttons button:focus {
+                background: #ffcc70;
+                box-shadow: 0 0 16px #ffcc40;
+                transform: scale(1.08);
+            }
+
+    .card {
+        max-width: 480px;
+        margin: 0 auto 40px auto;
+        background: rgba(255,255,255,0.07);
+        border: 1.5px solid rgba(255,255,255,0.13);
+        border-radius: 24px;
+        padding: 38px 32px 32px 32px;
+        box-shadow: 0 0 24px rgba(255,200,120,0.18);
+        position: relative;
+        z-index: 1;
+    }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+        color: #ffdd80;
+        letter-spacing: 1px;
+        font-size: 1.08rem;
+        text-align: left;
+    }
+
+    textarea, input[type="file"] {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        margin-bottom: 22px;
+        background: rgba(255,255,255,0.13);
+        color: #fff;
+        font-size: 1.08rem;
+        transition: background 0.2s;
+    }
+
+        textarea:focus, input[type="file"]:focus {
+            background: rgba(255,255,255,0.18);
+            outline: 2px solid #ffcc70;
+        }
+
+    button[type="submit"] {
+        background: #ffdd80;
+        color: #1f1c2c;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: background 0.2s, transform 0.2s;
+        box-shadow: 0 2px 8px rgba(255, 200, 120, 0.13);
+    }
+
+        button[type="submit"]:hover {
+            background: #ffcc70;
+            transform: translateY(-2px) scale(1.04);
+        }
+
+    .result-area {
+        margin-top: 28px;
+        background: rgba(255,255,255,0.10);
+        border-radius: 12px;
+        padding: 18px 16px 18px 16px;
+        word-break: break-word;
+        position: relative;
+        color: #ffdd80;
+        font-size: 1.08rem;
+        box-shadow: 0 0 10px #ffcc40;
+        min-height: 60px;
+    }
+
+    .copy-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        font-size: 0.9rem;
+        padding: 7px 14px;
+        background: #ffcc70;
+        border: none;
+        border-radius: 7px;
+        color: #1f1c2c;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+        .copy-btn:hover {
+            background: #ffdd80;
+        }
+
+    .error-message {
+        text-align: center;
+        color: #ff8080;
+        font-weight: bold;
+        margin-bottom: 18px;
+        font-size: 1.08rem;
+    }
+
+    .wave {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        z-index: 0;
+    }
+
+    @@keyframes glowTitle {
+        from {
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        to {
+            text-shadow: 0 0 25px rgba(255,255,255,0.7);
+        }
+    }
+
+    @@keyframes flicker {
+        0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+            opacity: 1;
+        }
+
+        20%, 22%, 24%, 55% {
+            opacity: 0.4;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .card
+
+    {
+        padding: 18px 8px 18px 8px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .tab-buttons button {
+        padding: 10px 16px;
+        font-size: 1rem;
+    }
+
+    }
+</style>
+
+<div class="page-title">🔁 SHA256 Hashleme</div>
+
+<div class="tab-buttons">
+    <button class="@(mode == "text" ? "active" : "")" onclick="showTab('text')">Metin</button>
+    <button class="@(mode == "file" ? "active" : "")" onclick="showTab('file')">Dosya</button>
+</div>
+
+<div class="card">
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="error-message">@error</div>
+    }
+
+    <form method="post" asp-action="Index" enctype="multipart/form-data">
+        <div id="textTab" style="display: @(mode == "text" ? "block" : "none")">
+            <label for="plainText">Metin girin:</label>
+            <textarea id="plainText" name="plainText" rows="4">@plainText</textarea>
+        </div>
+
+        <div id="fileTab" style="display: @(mode == "file" ? "block" : "none")">
+            <label for="uploadedFile">Dosya seçin:</label>
+            <input type="file" name="uploadedFile" id="uploadedFile" />
+        </div>
+
+        <button type="submit">Hashle</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(hash))
+    {
+        <div class="result-area" id="hashResult">
+            <strong>SHA256:</strong>
+            @if (!string.IsNullOrEmpty(fileName))
+            {
+                <span style="margin-left:8px;">[📄 @fileName]</span>
+            }
+            <button class="copy-btn" onclick="copyToClipboard('hashResult')">Kopyala</button>
+            <div style="margin-top: 12px;">@hash</div>
+        </div>
+    }
+</div>
+
+<!-- Dalga SVG -->
+<div class="wave">
+    <svg viewBox="0 0 1440 320">
+        <path fill="#1f1c2c" fill-opacity="1" d="M0,160L60,154.7C120,149,240,139,360,154.7C480,171,600,213,720,213.3C840,213,960,171,1080,165.3C1200,160,1320,192,1380,208L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+    </svg>
+</div>
+
+<script>
+    tsParticles.load("particles-js", {
+        fullScreen: { enable: false },
+        particles: {
+            number: { value: 60 },
+            size: { value: 3 },
+            color: "#ffffff",
+            links: { enable: true, color: "#ffffff", opacity: 0.3 },
+            move: { enable: true, speed: 1 }
+        },
+        background: { color: "transparent" }
+    });
+
+    function showTab(mode) {
+        document.getElementById("textTab").style.display = mode === "text" ? "block" : "none";
+        document.getElementById("fileTab").style.display = mode === "file" ? "block" : "none";
+    }
+
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "timeOut": "2000"
+    };
+
+    function copyToClipboard(id) {
+        const el = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(el).then(() => {
+            toastr.success("Kopyalandı", "Başarılı");
+        }).catch(() => {
+            toastr.error("Kopyalanamadı", "Hata");
+        });
+    }
+</script>

@@ -1,0 +1,222 @@
+﻿@{
+    ViewData["Title"] = "RSA ile Çöz";
+    var decrypted = ViewBag.DecryptedText as string;
+    var error = ViewBag.Error as string;
+    var encryptedText = ViewBag.EncryptedText as string;
+    var privateKey = ViewBag.PrivateKey as string;
+}
+
+<!-- particles.js -->
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+<div id="particles-js" style="position: fixed; width: 100%; height: 100%; z-index: -1;"></div>
+
+<!-- toastr (kopyalama için) -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #f4f4f4;
+        overflow-x: hidden;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-top: 60px;
+        margin-bottom: 20px;
+        color: #ffdd80;
+        text-shadow: 0 0 15px rgba(255, 200, 100, 0.6), 0 0 30px rgba(255, 180, 50, 0.5);
+        animation: flicker 2s infinite, glowTitle 3s ease-in-out infinite alternate;
+        letter-spacing: 2px;
+        position: relative;
+    }
+
+    .decrypt-container {
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px 80px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .decrypt-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px 25px;
+        width: 700px;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 12px rgba(255, 200, 120, 0.3);
+        color: #ffffff;
+        position: relative;
+    }
+
+        .decrypt-card h2 {
+            font-size: 1.5rem;
+            color: #ffdd80;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        margin-bottom: 14px;
+        background: rgba(255,255,255,0.12);
+        color: #fff;
+        font-size: 1rem;
+        resize: vertical;
+    }
+
+    .decrypt-card button {
+        background: #ffdd80;
+        color: #1f1c2c;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 10px;
+    }
+
+        .decrypt-card button:hover {
+            background: #ffcc70;
+        }
+
+    .result-area {
+        background: rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-top: 16px;
+        color: #ffdd80;
+        font-size: 0.95rem;
+        word-break: break-word;
+        max-height: 220px;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .copy-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #ffcc70;
+        border: none;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #1f1c2c;
+        font-weight: bold;
+    }
+
+    .error-message {
+        color: #ff8080;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .wave {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        z-index: 0;
+    }
+
+    @@keyframes glowTitle {
+        from {
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        to {
+            text-shadow: 0 0 25px rgba(255,255,255,0.7);
+        }
+    }
+
+    @@keyframes flicker {
+        0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+            opacity: 1;
+        }
+
+        20%, 22%, 24%, 55% {
+            opacity: 0.4;
+        }
+    }
+</style>
+
+<div class="page-title">🔓 RSA ile Çöz</div>
+
+<div class="decrypt-container">
+    <div class="decrypt-card">
+        <h2>Metin Çöz</h2>
+
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <div class="error-message">@error</div>
+        }
+
+        <form method="post" asp-action="Index">
+            <label for="encryptedText">Çözülecek Şifreli Metin</label>
+            <textarea id="encryptedText" name="encryptedText" rows="3" required>@encryptedText</textarea>
+
+            <label for="base64PrivateKey">Private Key</label>
+            <textarea id="base64PrivateKey" name="base64PrivateKey" rows="3" required>@privateKey</textarea>
+
+            <button type="submit">Çöz</button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(decrypted))
+        {
+            <div class="result-area" id="decryptedText">
+                <strong>🔓 Çözülen Metin:</strong>
+                <button class="copy-btn" onclick="copyToClipboard('decryptedText')">Kopyala</button>
+                <div style="margin-top: 8px;">@decrypted</div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="wave">
+    <svg viewBox="0 0 1440 320">
+        <path fill="#1f1c2c" fill-opacity="1" d="M0,160L60,154.7C120,149,240,139,360,154.7C480,171,600,213,720,213.3C840,213,960,171,1080,165.3C1200,160,1320,192,1380,208L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+    </svg>
+</div>
+
+<script>
+    tsParticles.load("particles-js", {
+        fullScreen: { enable: false },
+        particles: {
+            number: { value: 60 },
+            size: { value: 3 },
+            color: "#ffffff",
+            links: { enable: true, color: "#ffffff", opacity: 0.3 },
+            move: { enable: true, speed: 1 }
+        },
+        background: { color: "transparent" }
+    });
+
+    function copyToClipboard(elementId) {
+        const content = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(content).then(() => {
+            toastr.success("Kopyalandı", "Başarılı");
+        }).catch(() => {
+            toastr.error("Kopyalanamadı", "Hata");
+        });
+    }
+</script>
