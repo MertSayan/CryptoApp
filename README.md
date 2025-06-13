@@ -42,8 +42,29 @@ Kullanıcı, şifrelenmiş bir metni ve private key’i girerek bu sayfada metni
 Şifreli veri, girilen private key ile başarıyla çözülmüş ve orijinal hali olan “Merhaba Dünya” tekrar elde edilmiştir. Bu ekran, RSA algoritmasının çözüm aşamasını gösterir.
 
 
+⚡ SHA256 Hashleme Aracı
 
+Bu sayfa, kullanıcının metin veya dosya girişini seçerek SHA256 algoritmasıyla özet almasına olanak tanır. Arayüzde iki sekme yer alır: Metin ve Dosya. Böylece kullanıcı ihtiyacına göre kolayca işlem yapabilir.
 
+📝 SHA256 ile Metin Hashleme
+![image](https://github.com/user-attachments/assets/e7ca3971-5a2f-4692-8416-731c40b209b1)
 
+Kullanıcı bu alanda istediği metni girerek tek tıklamayla SHA256 hash değerini üretebilir. Üretilen hash değeri kopyalanabilir ve doğrulama, imzalama gibi işlemlerde kullanılabilir.
 
+✅ SHA256 Metin Hashleme Sonucu
+![image](https://github.com/user-attachments/assets/9c4a4942-5d1b-4a13-abb2-6e560cce2d2e)
 
+Girilen “Naber Dünya” metni başarılı şekilde SHA256 algoritmasıyla özetlenmiş ve sonuç kullanıcıya gösterilmiştir. Kopyala butonuyla tek tıkla panoya alınabilir.
+
+📁 SHA256 ile Dosya Hashleme (Dosya Seçimi)
+![image](https://github.com/user-attachments/assets/df7401e7-738b-49e0-9485-2fcf8f90c401)
+
+Kullanıcı bu ekranda bilgisayarından bir dosya seçerek onun SHA256 hash'ini oluşturabilir. Bu özellik dosya bütünlüğü ve dijital imza işlemleri için önemlidir.
+
+📄 SHA256 Dosya Hashleme (Dosya Görünümü)
+![image](https://github.com/user-attachments/assets/79bd3d5a-5767-4bf0-8dd4-42f3ddd92200)
+Seçilen dosya ("web-islerler2024.pdf") işlenmek üzere hazırdır. Uygulama, dosya içeriğini SHA256 algoritmasına göre özetleyerek eşsiz bir hash üretir.
+
+🔍 SHA256 Hashleme Sonucu (Dosya)
+![image](https://github.com/user-attachments/assets/eb924e95-abac-4c04-822b-7d5cceebd203)
+İlgili dosya için SHA256 hash çıktısı başarıyla oluşturulmuş ve kullanıcıya sunulmuştur. Hash değeri dosya doğrulama süreçlerinde kullanılabilir ve kolayca kopyalanabilir.
